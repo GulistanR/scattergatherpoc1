@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e432640a-336b-4760-856f-bfc6788bf013" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="scattergatherpoc1Flow" doc:id="36c5da91-8172-4f80-b2d3-06e31ec824d1" >
+		<http:listener doc:name="Listener" doc:id="b9171df8-a7b3-4193-9b3c-d308a5897696" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="30404d61-dc7e-47c7-bdc7-9731ab7c6976" message="startflow"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="9e8a0aea-e05f-4c74-953f-d402033af964" >
+			<route >
+				<logger level="INFO" doc:name="Logger" doc:id="4be5c532-1c36-44c5-86e2-497c494ace77" />
+				<logger level="INFO" doc:name="Logger" doc:id="76e39bf6-e2b3-48c3-9d76-25852c04f225" />
+				<ee:transform doc:name="Transform Message" doc:id="b0b024c2-4a12-46b2-a420-453f624df596" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"rout1"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="070c527c-9254-4ec4-aa5e-5ad05377b7b5" />
+			</route>
+			<route >
+				<logger level="INFO" doc:name="Logger" doc:id="08d69ced-765d-4994-82da-0f4c2a8d1dda" />
+				<logger level="INFO" doc:name="Logger" doc:id="c1876c55-323c-47bc-a3ee-8af8fd328269" />
+				<ee:transform doc:name="Transform Message" doc:id="52872a2a-a715-410d-972d-69688939dfee" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"rout2"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="9617f637-699a-440c-8e3b-7ce294626e69" />
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="5c1e2542-c8a7-44a8-aa02-4b996f8262a5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="d5c6ae17-3161-41e7-b22a-1b3b792fb705" message="endflow"/>
+	</flow>
+</mule>
